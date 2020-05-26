@@ -1,0 +1,22 @@
+---
+- hosts: 'http_sw'
+  connection: network_cli
+  gather_facts: no
+
+
+  tasks:
+    - name: Delete http service from switches
+      ios_command:
+        commands: 'show run | inc http'
+      register: raw_http_service
+
+    - set_fact:
+        http_service: "{{ raw_http_service.stdout[0] }}"
+
+    - name: Delete http service if present
+      ios_config:
+        lines:
+          - no ip http server
+          - no ip http secure-server
+        save_when: modified
+      when: http_service == 'ip http server'
