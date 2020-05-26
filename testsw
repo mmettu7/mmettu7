@@ -19,4 +19,5 @@
           - no ip http server
           - no ip http secure-server
         save_when: modified
-      when: http_service == 'ip http server'
+       when: http_service.find("ip http server")  != -1 and  http_service.find("ip http secure-server")  != -1
+
